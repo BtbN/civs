@@ -14,7 +14,8 @@ BEGIN {
                       $use_combined_ratings $external_ballots
                       $choices @choices $num_choices $num_auth
                       $num_votes $recorded_voters $ballot_reporting
-                      $reveal_voters $authorization_key $shuffle
+                      $reveal_voters $reveal_ballot_id
+                      $authorization_key $shuffle
                       $no_opinion %voter_keys %used_voter_keys
                       $restrict_results $result_addrs
                       $hash_result_key $last_vote_time $close_time
@@ -28,7 +29,8 @@ our ($name, $title, $email_addr, $description, $num_winners, $addresses,
      $writeins, $allow_voting, $voting_enabled, $proportional,
      $use_combined_ratings, $external_ballots, $choices, @choices,
      $num_choices, $num_auth, $num_votes, $recorded_voters,
-     $ballot_reporting, $reveal_voters, $authorization_key, $shuffle,
+     $ballot_reporting, $reveal_voters, $reveal_ballot_id,
+     $authorization_key, $shuffle,
      $no_opinion, %voter_keys, %used_voter_keys, $restrict_results,
      $result_addrs, $hash_result_key, $last_vote_time, $close_time,
      $email_load);
@@ -72,6 +74,7 @@ sub GetElectionData {
     $ballot_reporting = $eref->{'ballot_reporting'} or $ballot_reporting = '';
     $external_ballots = $eref->{'external_ballots'} or $external_ballots = 'no';
     $reveal_voters = $eref->{'reveal_voters'} or $reveal_voters = '';
+    $reveal_ballot_id = $eref->{'reveal_ballot_id'} or $reveal_ballot_id = '';
     $restrict_results = $eref->{'restrict_results'};
     $result_addrs = $eref->{'result_addrs'};
     $hash_result_key = 0;

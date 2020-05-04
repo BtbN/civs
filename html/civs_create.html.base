@@ -223,13 +223,18 @@ body.appendChild(create_header("@Create_a_poll@", "@lang2@"))
 </div>
 <div id=reveal_voters_div>
   <input type=checkbox name=ballot_reporting id=ballot_reporting value="yes"
-         onClick="make_visible('reveal_voters')"
+         onClick="make_visible('reveal_voters', 'reveal_ballot_id_sub')"
          title="@Allows_any_to_view@">
   <label for=ballot_reporting>@Enable_detailed_ballot_reporting@</label>
   <div class=suboption id=reveal_voters>
     <input type=checkbox name=reveal_voters id=reveal_voters value="yes" aria-labelledby="reveal_voters_label"/>
     <label for=reveal_voters id=reveal_voters_label>@Also_reveal_identity@</label>
     <p class=emphasized>@Reveal_warning@</p>
+  </div>
+  <div class=suboption id=reveal_ballot_id_sub>
+    <input type=checkbox name=reveal_ballot_id id=reveal_ballot_id value="yes" aria-labelledby="reveal_ballot_id_label"/>
+    <label for=reveal_ballot_id id=reveal_ballot_id_label>@Also_reveal_ballot_id@</label>
+    <p class=emphasized>@Reveal_ballot_id_warning@</p>
   </div>
 </div>
 <div>
@@ -280,7 +285,7 @@ body.appendChild(create_header("@Create_a_poll@", "@lang2@"))
 </div>
 
 <script>
-    make_invisible('publicize', 'prcontrol', 'reveal_voters', 'rrcontrol', 'no_IP_check_div');
+    make_invisible('publicize', 'prcontrol', 'reveal_voters', 'reveal_ballot_id_sub', 'rrcontrol', 'no_IP_check_div');
 </script>
 </body>
 

@@ -121,6 +121,8 @@ if ($ballot_reporting eq 'yes') {
             my @result_addrs = split /(\r\n)+/, $result_addrs;
             $msg .= $tx->however_results_restricted([@result_addrs]);
         }
+    } elsif ($reveal_ballot_id eq 'yes') {
+        $msg .= $tx->ballot_ballot_id_will_be_visible();
     } else {
         $msg .= $tx->ballot_will_be_anonymous();
     }
@@ -136,7 +138,9 @@ print '</div>', $cr;
 &voting::GenerateVoteForm($voter_key, $authorization_key, [@choice_index], [@rank], $js_ui, 0,
     ($ballot_reporting eq 'yes' &&
      $reveal_voters eq 'yes' &&
-     $public eq 'yes'));
+     $public eq 'yes'),
+    ($ballot_reporting eq 'yes' &&
+     $reveal_ballot_id eq 'yes'));
 
 if ($public eq 'yes') {
     my $url = "@PROTO@://@THISHOST@$thisurl?id=$election_id";
@@ -210,6 +214,15 @@ sub ProcessVote {
             $edata{"email_addr $voter_key"} = encode('utf-8',
                                                      param('email_address'));
         }
+    }
+    if ($reveal_ballot_id eq 'yes') {
+        # The ID goes into the ballot report as the voter typed it, so take
+        # only the digits the vote form asks for.
+        my $ballot_id = scalar param('ballot_id');
+        $ballot_id = '' unless defined($ballot_id)
+                            && $ballot_id =~ m/\A[0-9]{1,20}\z/;
+        $vdata{"voter key of $ballot_key"} = $voter_key;
+        $edata{"ballot_id $voter_key"} = $ballot_id;
     }
 
     # Now, update matrix.

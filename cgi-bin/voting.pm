@@ -7,7 +7,8 @@ use strict;
 
 sub GenerateVoteForm {
 
-    my ($voter_key, $authorization_key, $choice_index_ref, $rank_ref, $js_ui, $lean, $askforid) = @_;
+    my ($voter_key, $authorization_key, $choice_index_ref, $rank_ref, $js_ui, $lean, $askforid,
+        $askforballotid) = @_;
 
     my @choice_index = @{$choice_index_ref};
     my @rank = @{$rank_ref};
@@ -27,6 +28,11 @@ sub GenerateVoteForm {
         print "<script>var voter_id_required = 1</script>\r\n";
         print p($tx->Identifier_request,
             '<input id="id_request" type="text" name="email_address" size="50"></p>'),
+            "\r\n"
+    }
+    if ($askforballotid) {
+        print p({-style => 'text-align:center'}, $tx->Identifier_request_anonymous_ballot_id,
+            '<input id="ballot_id_request" type="number" name="ballot_id" size="50">'),
             "\r\n"
     }
     print hidden('key', $voter_key), $cr;

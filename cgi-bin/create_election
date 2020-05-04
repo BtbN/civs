@@ -154,6 +154,7 @@ $edata{'use_combined_ratings'} = $use_combined_ratings;
 
 SetBinaryParameter('ballot_reporting', 'no');
 SetBinaryParameter('reveal_voters', 'no');
+SetBinaryParameter('reveal_ballot_id', 'no');
 
 my $restrict_results = SetBinaryParameter('restrict_results', 'no');
 my $result_addrs;
@@ -168,6 +169,7 @@ if ($restrict_results eq 'yes') {
 if ($publicize eq 'yes') {
     $edata{'ballot_reporting'} = 'no';
     $edata{'reveal_voters'} = 'no';
+    $edata{'reveal_ballot_id'} = 'no';
     $edata{'restrict_results'} = 'no';
 }
 

@@ -526,6 +526,9 @@ sub report_authorized {
 sub Identifier_request {
     'Please give your email address or other recognizable identifier:'
 }
+sub Identifier_request_anonymous_ballot_id {
+    'Ballot ID:'
+}
 sub Need_identifier {
     'Sorry, you must identify yourself in order to vote.'
 }
@@ -558,6 +561,14 @@ sub however_results_restricted {
 	$r .= tt(escapeHTML($u));
     }
     $r . '.'
+}
+
+sub ballot_ballot_id_will_be_visible {
+    ' You can optionally assign a self-defined ballot ID (numbers only) to your
+      ballot that will appear in the poll results to identify your own ballot.
+      However, your ballot will still be anonymous:
+      only this self-defined ballot ID will show up but no personally
+      identifying information will appear.'
 }
 
 sub ballot_will_be_anonymous {

@@ -1939,6 +1939,19 @@ Also_reveal_identity {
   ja:  詳細な投票レポートでは、投票ごとに有権者の身元も明らかにします。
   zh:  在详细的选票报告中，还揭示了每张选票的选民身份。
 }
+Also_reveal_ballot_id {
+  en {
+    In detailed ballot report, also reveal the self-defined ballot ID of the
+    voter with each ballot.
+  }
+}
+Reveal_ballot_id_warning {
+  en {
+    Voters may choose a numeric ballot ID when they vote, so that they can find
+    their own ballot in the detailed report. Voters stay anonymous: only the ID
+    they chose is shown, and no identifying information appears.
+  }
+}
 Reveal_warning {
   en {
     Voters are <i class="warning">not</i> anonymous if this is

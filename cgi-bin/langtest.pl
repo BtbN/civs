@@ -83,6 +83,7 @@ print $tx->Rank, $cr;
 print $tx->Choice, $cr;
 print $tx->Weight, $cr;
 print $tx->address_will_be_visible, $cr;
+print $tx->ballot_ballot_id_will_be_visible, $cr;
 print $tx->ballot_will_be_anonymous, $cr;
 print $tx->submit_ranking, $cr;
 print $tx->only_writeins_are_permitted, $cr;
