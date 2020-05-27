@@ -138,6 +138,9 @@ body.appendChild(create_header("@Create_a_poll@", "@lang2@"))
     <label id=supervisor_name for=name>@Name_of_supervisor@</label>
     <input type=text name=name id=name size="20" aria-labelledby="supervisor_name">
 
+    <label id=supervisor_password for=key>@Password_of_supervisor@</label>
+    <input type=password name=key id=key size="20" aria-labelledby="supervisor_password">
+
     <label for=email_addr id=supervisor_email>@Email_address_of_supervisor@</label>
     <input type=text id=email_addr name=email_addr size="20" aria-labelledby=supervisor_email
       onchange="if (!validateEmail(this.value)) { alert('@Invalid_email_address@') }" >

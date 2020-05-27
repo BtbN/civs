@@ -1163,6 +1163,9 @@ Name_of_supervisor {
   ja: 監督者（あなた）の名前：
   zh: 主管姓名（您）：
 }
+Password_of_supervisor {
+  en: Password of supervisor:
+}
 Email_address_of_supervisor {
   en: E-mail address of supervisor: 
   de: E-Mail-Adresse des Betreuers: 

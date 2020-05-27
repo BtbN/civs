@@ -24,6 +24,15 @@ my $mail_mgmt_url = "@PROTO@://$thishost$civs_bin_path/mail_mgmt@PERLEXT@";
 HTML_Header($tx->CIVS_Poll_Creation);
 CIVS_Header($tx->CIVS_Poll_Creation);
 
+# Poll creation is restricted to supervisors who know the admin key, so that
+# this server cannot be used to send unsolicited invitation mail.
+if (!param('key') || param('key') ne '@ADMIN_KEY@') {
+    print h1($tx->Error);
+    print p("Password missing or wrong");
+    print end_html();
+    exit 0;
+}
+
 my $email_addr = param('email_addr');
 $email_addr = TrimAddr($email_addr);
 if (!&CheckAddr($email_addr)) {
