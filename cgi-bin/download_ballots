@@ -11,6 +11,7 @@ use Digest::MD5 qw(md5_hex);
 use POSIX qw(strftime);
 use DB_File;
 use beatpath;
+use cschulze;
 use Socket;
 use IO::Handle;
 
@@ -47,20 +48,34 @@ if (!param('admin_key') || param('admin_key') ne '@ADMIN_KEY@') {
     }
 }
 
-print header(-type=>'application/text', -attachment=>'civs_ballots.csv');
+# The ballots can also be had in the format the cschulze program reads, so
+# that the Schulze proportional ranking can be checked by running that
+# program over them by hand.
+my $dat = (param('format') || '') eq 'dat';
 
-# print the list of candidate names
-print join ',', @choices;
-print "\n";
+print header(-type=>'application/text',
+             -attachment=>($dat ? 'civs_ballots.dat' : 'civs_ballots.csv'));
 
 my @voters = split /\n/, $vdata{'recorded_voters'};
 fisher_yates_shuffle(\@voters);  # permute @voters to improve anonymity
+
+# recorded_vote is a comma separated list of the ranks that the voter
+# assigned to candidates. Element i of the list corresponds to candidate i.
+my @ballots;
 foreach my $voter_key (@voters) {
-    # recorded_vote is a comma separated list of the ranks
-    # that the voter assigned to candidates.  Element i of the list
-    # corresponds to candidate i.
     my $recorded_vote = $vdata{$voter_key};
-    print "$recorded_vote\n";
+    next unless defined($recorded_vote);
+    push @ballots, [split /,/, $recorded_vote];
+}
+
+if ($dat) {
+    cschulze::write_ballots(\*STDOUT, \@choices, \@ballots);
+} else {
+    # print the list of candidate names
+    print join(',', @choices), "\n";
+    foreach my $ballot (@ballots) {
+        print join(',', @{$ballot}), "\n";
+    }
 }
 
 exit 0;

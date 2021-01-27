@@ -22,6 +22,7 @@ use rp;
 use runoff;
 use minimax;
 use b2r;
+use cschulze;
 
 my $thisurl = $civs_bin_path."/results@PERLEXT@";
 
@@ -251,6 +252,7 @@ sub ComputeResults {
     my $runoff_checked = '';
     my $proportional_checked = '';
     my $b2r_checked = '';
+    my $cschulze_checked = '';
     if ($proportional eq 'yes') {
         $proportional_checked = $checked;
     } elsif ($algorithm eq 'civs_ranked_pairs') {
@@ -265,6 +267,8 @@ sub ComputeResults {
 	$minimax_checked = $checked;
     } elsif ($algorithm eq 'beatpath') {
 	$bw_checked = $checked;
+    } elsif ($algorithm eq 'cschulze') {
+	$cschulze_checked = $checked;
     } elsif ($algorithm eq 'b2r') {
 	$b2r_checked = $checked;
     } else {
@@ -310,6 +314,12 @@ sub ComputeResults {
 	    value="b2r"',
 	    $b2r_checked,
 	' /> Bottom-2 Runoff', BR,
+	'<input type="radio"
+	    name="algorithm"
+	    onclick="newSettings()"
+	    value="cschulze"',
+	    $cschulze_checked,
+	' /> Schulze proportional ranking', BR,
         '<input type="checkbox"
             onclick="newSettings()"
             name="proportional",
@@ -480,6 +490,8 @@ sub BallotReport {
 		$download_url .= '&rkey=' . escapeHTML($result_key);
 	    }
 	    print RESULTS p($tx->Download_ballots_as_a_CSV($download_url));
+	    print RESULTS p($tx->Download_ballots_as_a_DAT(
+				$download_url . '&format=dat'));
         } else {
 	    print RESULTS p($tx->No_ballots_were_cast);
 	}

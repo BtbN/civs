@@ -176,6 +176,7 @@ print $tx->Result_details, $cr;
 print $tx->Ballot_report, $cr;
 print $tx->Ballots_are_shown_in_random_order, $cr;
 print $tx->Download_ballots_as_a_CSV, $cr;
+print $tx->Download_ballots_as_a_DAT, $cr;
 print $tx->No_ballots_were_cast, $cr;
 print $tx->Ballot_reporting_was_not_enabled, $cr;
 print $tx->Tied, $cr;

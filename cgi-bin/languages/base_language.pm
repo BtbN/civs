@@ -985,6 +985,9 @@ sub Ballots_are_shown_in_random_order {
 sub Download_ballots_as_a_CSV { # url
     "[<a href=\"$_[1]\">Download ballots in CSV format</a>]"
 }
+sub Download_ballots_as_a_DAT { # url
+    "[<a href=\"$_[1]\">Download ballots in cschulze format</a>]"
+}
 sub No_ballots_were_cast {
     "No ballots were cast in this poll."
 }

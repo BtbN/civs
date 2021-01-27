@@ -19,7 +19,8 @@ our %algorithm_module = (beatpath_winner => 'beatpath', # obsolete
 		        runoff => 'runoff',
                         minimax => 'minimax',
                         minimax_wv => 'minimax',
-                        b2r => 'b2r'
+                        b2r => 'b2r',
+                        cschulze => 'cschulze'
                        );
 
 # Map legal completion rule modules to 1.
@@ -27,6 +28,7 @@ our %legal_module = (beatpath2 => 1,
                     rp => 1,
 		    runoff => 1,
                     minimax => 1,
-                    b2r => 1);
+                    b2r => 1,
+                    cschulze => 1);
 
 1;
