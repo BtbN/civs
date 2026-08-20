@@ -21,7 +21,10 @@ function read_from_url(url, cont, err, mimetype) {
             }
         }
     }
-    if (!url.match(/^https?:/)) {
+    // A URL that names a path from the root of the site is already where it
+    // says it is; only one relative to the page it appears on needs the
+    // page's own directory put in front of it.
+    if (!url.match(/^(https?:|\/)/)) {
         var prefix = location.href;
         url = prefix.replace(/\/[^\/]*$/, '/') + url;
     }
@@ -49,7 +52,10 @@ function post_to_url(url, params, cont, err, mimetype) {
             }
         }
     }
-    if (!url.match(/^https?:/)) {
+    // A URL that names a path from the root of the site is already where it
+    // says it is; only one relative to the page it appears on needs the
+    // page's own directory put in front of it.
+    if (!url.match(/^(https?:|\/)/)) {
         var prefix = location.href;
         url = prefix.replace(/\/[^\/]*$/, '/') + url;
     }
@@ -65,7 +71,11 @@ function post_to_url(url, params, cont, err, mimetype) {
 
 // fetch the contents from the URL "url" into the DOM node with id attribute
 // "id".  Once successful, apply the optionally provided function "cont()".
-function fetch_content(id, url, cont) {
+// If the fetch fails, the failure is reported in the node itself -- unless
+// "onerr()" is provided, which is then called instead, for a box whose
+// contents are optional and which already says something sensible when
+// there is nothing to put in it.
+function fetch_content(id, url, cont, onerr) {
     const node = document.getElementById(id);
     read_from_url(url,
         function(responseText) {
@@ -74,6 +84,8 @@ function fetch_content(id, url, cont) {
             if (cont != undefined) cont();
         },
         function(errmsg) {
+            var undefined;
+            if (onerr != undefined) { onerr(); return }
             node.innerHTML = 'Could not read from ' + url + ': ' + errmsg
         });
 }

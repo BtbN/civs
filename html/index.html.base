@@ -20,9 +20,9 @@
 <script>
     var loc = location.hostname + (location.port ? ":" + location.port : "")
     if (loc != "@THISHOST@" || location.protocol != "@PROTO@:") {
-        console.log("Redirecting from " + loc + " to @PROTO@://@THISHOST@/@CIVSURL@")
+        console.log("Redirecting from " + loc + " to @PROTO@://@THISHOST@@CIVSURL@")
         setTimeout(() => {
-            location = "@PROTO@://@THISHOST@/@CIVSURL@"
+            location = "@PROTO@://@THISHOST@@CIVSURL@"
         }, 1000)
     }
 </script>
@@ -119,10 +119,14 @@
 </footer>
 </div>
 <script>
-    fetch_content('newsfeed', '@CIVSURL@/news.html',
-	function() {
-	    fetch_content('top_polls', '@PROTO@://@THISHOST@@CIVSBINURL@/get_top_polls@PERLEXT@');
-	});
+    // A site with no news to show has no news.html, which is not an error:
+    // the box already says there is no current news. Either way the top
+    // polls are loaded afterwards, so a missing news file does not leave
+    // them saying "loading" for ever.
+    function load_top_polls() {
+	fetch_content('top_polls', '@PROTO@://@THISHOST@@CIVSBINURL@/get_top_polls@PERLEXT@');
+    }
+    fetch_content('newsfeed', '@CIVSURL@/news.html', load_top_polls, load_top_polls);
 </script>
 </body>
 </html>
