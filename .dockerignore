@@ -1,0 +1,13 @@
+.git
+tests/*/work
+tests/*/node_modules
+config/*
+!config/sample
+data
+docker/*.log
+
+# built helpers: the image builds its own in a separate stage
+src/cschulze
+src/gettimeofday
+src/lockserv
+src/timeout
