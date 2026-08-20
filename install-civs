@@ -246,12 +246,16 @@ touch $CIVSDATADIR/nonce_seed $CIVSDATADIR/log $CIVSDATADIR/cgi-log	      \
 if [ "$id" = 0 ]; then
     $CHOWN "$WEB_USER" $CIVSDATADIR/nonce_seed $CIVSDATADIR/log		      \
                       $CIVSDATADIR/cgi-log $CIVSDATADIR/global_lock	      \
-                      $CIVSDATADIR/email-control.txt $CIVSDATADIR/elections
+                      $CIVSDATADIR/email-control.txt $CIVSDATADIR/elections   \
+                      $CIVSDATADIR/private_host_id
     $CHGRP "$WEB_GROUP" $CIVSDATADIR/nonce_seed $CIVSDATADIR/log		      \
                       $CIVSDATADIR/cgi-log $CIVSDATADIR/global_lock	      \
-                      $CIVSDATADIR/email-control.txt $CIVSDATADIR/elections
+                      $CIVSDATADIR/email-control.txt $CIVSDATADIR/elections   \
+                      $CIVSDATADIR/private_host_id
 fi
-chmod 600 $CIVSDATADIR/nonce_seed
+# The private key identifies this server. Only the user the web server runs
+# as has any business reading it, as with the nonce seed beside it.
+chmod 600 $CIVSDATADIR/nonce_seed $CIVSDATADIR/private_host_id
 chmod 644 $CIVSDATADIR/log $CIVSDATADIR/cgi-log $CIVSDATADIR/global_lock      \
           $CIVSDATADIR/email-control.txt
 
