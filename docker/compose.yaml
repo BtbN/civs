@@ -1,0 +1,111 @@
+# An example of hosting a CIVS instance on a server.
+#
+# Caddy holds the public ports and terminates TLS, obtaining a certificate
+# from Let's Encrypt on its own; CIVS sits behind it on the internal network
+# with no published port of its own. Poll data lives in a named volume.
+#
+# Copy this directory to the server along with the source tree, write an
+# .env file beside this one (see below), then:
+#
+#     docker compose up -d
+#
+# An .env file for a real deployment looks like:
+#
+#     CIVS_DOMAIN=civs.example.org
+#     CIVS_ADMIN_EMAIL=you@example.org
+#     CIVS_ADMIN_KEY=<something long and random>
+#     CIVS_SMTP_HOST=smtp.example.org
+#     CIVS_SMTP_PORT=587
+#     CIVS_SMTP_STARTTLS=1
+#     CIVS_SMTP_AUTH_USER=civs@example.org
+#     CIVS_SMTP_AUTH_PASSWD=<password>
+#     CIVS_DONATE_URL=https://example.org/donate
+#
+# To try it on your own machine instead:
+#
+#     CIVS_DOMAIN=localhost
+#     CIVS_PROTO=http
+#     CIVS_SITE=http://localhost
+#     CIVS_ADMIN_KEY=whatever
+#
+# Caddy serves plain HTTP for a site address written with a scheme, and with
+# no SMTP host CIVS prints each poll's control link on the page rather than
+# mailing it. Do not put a port in CIVS_SITE unless you publish that port
+# below as well: Caddy listens on whatever the address names, not on 80.
+
+services:
+  civs:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    environment:
+      # These two go into every link CIVS puts in a page or an email, so
+      # they have to describe how voters reach the site, not how the
+      # container is wired up. Caddy terminates TLS, so the protocol here
+      # is the one the browser used, not the one it forwards over.
+      #
+      # CIVS_DOMAIN is a host name and nothing else. A scheme in here ends
+      # up concatenated with this one, giving links to http://https://...
+      CIVS_HOST: ${CIVS_DOMAIN:?set CIVS_DOMAIN in .env}
+      CIVS_PROTO: ${CIVS_PROTO:-https}
+
+      # Poll creation and the admin views demand this. Without it the
+      # entrypoint generates one into the data volume and prints it at
+      # startup, which is fine to try out and not what you want in public.
+      CIVS_ADMIN_KEY: ${CIVS_ADMIN_KEY:?set CIVS_ADMIN_KEY in .env}
+      CIVS_ADMIN_KEY_QUIET: 1
+
+      CIVS_SUPERVISOR: ${CIVS_ADMIN_EMAIL:-}
+
+      # Cosmetic, but they are the settings an existing install is most
+      # likely to have set: where the banner's "About CIVS" link points,
+      # the donation link, the suggestion box, and whether home page
+      # visits are logged.
+      CIVS_ABOUT_URL: ${CIVS_ABOUT_URL:-https://civs1.civs.us}
+      CIVS_DONATE_URL: ${CIVS_DONATE_URL:-}
+      CIVS_SUGGESTION_BOX: ${CIVS_SUGGESTION_BOX:-}
+      CIVS_LOG_HOME_VISITS: ${CIVS_LOG_HOME_VISITS:-}
+
+      # With no SMTP host CIVS cannot send a supervisor the control link for
+      # a poll, or a voter their ballot link, so it falls back to printing
+      # them on the page. That is only usable for a poll you run yourself.
+      CIVS_SMTP_HOST: ${CIVS_SMTP_HOST:-}
+      CIVS_SMTP_PORT: ${CIVS_SMTP_PORT:-25}
+      CIVS_SMTP_STARTTLS: ${CIVS_SMTP_STARTTLS:-0}
+      CIVS_SMTP_USE_SSL: ${CIVS_SMTP_USE_SSL:-0}
+      CIVS_SMTP_AUTH_USER: ${CIVS_SMTP_AUTH_USER:-}
+      CIVS_SMTP_AUTH_PASSWD: ${CIVS_SMTP_AUTH_PASSWD:-}
+    volumes:
+      - civs-data:/var/lib/civs
+    # No ports here on purpose. CIVS believes the X-Real-IP and
+    # X-Forwarded-For headers it is given, and a public poll allows one
+    # ballot per address, so anything that can reach it directly can vote
+    # as many times as it likes by varying the header. Only the proxy
+    # below, which overwrites both, should be able to talk to it.
+    expose:
+      - "80"
+
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      # Caddy's site address, which unlike CIVS_DOMAIN may carry a scheme.
+      # Left as the bare host name it means "serve this over HTTPS, get a
+      # certificate, and redirect HTTP to it".
+      CIVS_SITE: ${CIVS_SITE:-${CIVS_DOMAIN:?set CIVS_DOMAIN in .env}}
+      CIVS_ADMIN_EMAIL: ${CIVS_ADMIN_EMAIL:-}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data      # certificates; keep this or you will re-issue
+      - caddy-config:/config
+    depends_on:
+      - civs
+
+volumes:
+  civs-data:
+  caddy-data:
+  caddy-config:

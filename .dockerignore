@@ -11,3 +11,6 @@ src/cschulze
 src/gettimeofday
 src/lockserv
 src/timeout
+
+# holds the admin key and the SMTP password
+docker/.env

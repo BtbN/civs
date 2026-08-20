@@ -53,7 +53,9 @@ else
 fi
 
 cat > "$settings" <<EOF
-CIVSHOME='${proto}://${host}/civs'
+# Where the banner's "About CIVS" link points: the project, not this
+# instance. Upstream's sample names its own installation.
+CIVSHOME='${CIVS_ABOUT_URL:-https://civs1.civs.us}'
 PROTO=${proto}
 THISHOST='${host}'
 SUPERVISOR='${supervisor}'
@@ -90,7 +92,7 @@ MAX_TEST_BALLOTS=${CIVS_MAX_TEST_BALLOTS:-200000}
 
 SUGGESTION_BOX='${CIVS_SUGGESTION_BOX:-}'
 DONATE_URL='${CIVS_DONATE_URL:-}'
-LOG_HOME_VISITS=
+LOG_HOME_VISITS=${CIVS_LOG_HOME_VISITS:-}
 
 EN_SUFFIX='.en'
 UTF8_SUFFIX='.utf8'

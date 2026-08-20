@@ -1,0 +1,33 @@
+# Caddy in front of CIVS: TLS, and honest client addresses.
+#
+# CIVS_SITE is Caddy's site address. Written as a bare host name it asks
+# Let's Encrypt for a certificate and redirects http to https by itself.
+# Written as http://localhost it serves plain HTTP, which is how to try the
+# stack on your own machine. Caddy listens on whatever port the address
+# names, so naming one that compose does not publish leaves it unreachable.
+
+{$CIVS_SITE} {
+	# Only used to warn you before a certificate expires.
+	tls {$CIVS_ADMIN_EMAIL}
+
+	encode gzip
+
+	reverse_proxy civs:80 {
+		# CIVS takes the client's address from X-Real-IP, falling back
+		# to X-Forwarded-For, and trusts whichever it finds -- there is
+		# no trusted-proxy setting to tell it otherwise. A public poll
+		# allows one ballot per address, so a client that can set those
+		# headers can vote as often as it likes.
+		#
+		# Setting both to the address the connection actually came from
+		# replaces anything the client sent, which is what makes the
+		# per-address limit mean anything. Caddy would otherwise append
+		# to an X-Forwarded-For it was given rather than replace it.
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-For {remote_host}
+
+		# Same reasoning for the headers CIVS consults after those two.
+		header_up -X-IPRemoteAddr
+		header_up -X-Remote-Address
+	}
+}

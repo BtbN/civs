@@ -15,6 +15,7 @@ js/civs_hdr.js.2.??
 
 
 # local stuff
+docker/.env
 shipit
 data
 config/*
